@@ -1,5 +1,5 @@
 from process_data import data
-from math import exp
+from math import exp, floor, ceil
 
 def sigmoid(z):
     if z < 0:
@@ -48,8 +48,6 @@ def lowest_variance():
             best_variance = var
             best_subject = subject
     return best_subject, best_variance
-
-from math import floor, ceil
 
 def percentile(values, p):
     n = len(values)

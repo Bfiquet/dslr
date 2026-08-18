@@ -4,11 +4,7 @@ import matplotlib.pyplot as plt
 def pair_plot():
     subjects = data.subjects
     n = len(subjects)
-    fig, axes = plt.subplots(
-        n,
-        n,
-        figsize=(15, 15)
-    )
+    fig, axes = plt.subplots(n, n, figsize=(15, 15))
     houses = [
         (data.Gryffindor, "red"),
         (data.Slytherin, "green"),
@@ -32,24 +28,13 @@ def pair_plot():
                     x = []
                     y = []
                     for student in points:
-                        if (
-                            student[j] is not None
-                            and student[i] is not None
-                        ):
+                        if (student[j] is not None and student[i] is not None ):
                             x.append(student[j])
                             y.append(student[i])
-                    ax.scatter(
-                        x,
-                        y,
-                        c=color,
-                        s=5,
-                        alpha=0.5
-                    )
+                    ax.scatter(x, y, c=color, s=5, alpha=0.5)
             if i == j:
                 ax.axis("off")
-            ax.tick_params(
-                labelsize=5
-            )
+            ax.tick_params(labelsize=5)
             if i == n-1:
                 ax.set_xlabel(subjects[j], fontsize=7)
             if j == 0:
