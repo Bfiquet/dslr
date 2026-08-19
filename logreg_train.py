@@ -1,18 +1,36 @@
 import json
 from process_data import data
-from utils import sigmoid
+from utils import sigmoid, mean, variance
 
-def create_data(house):
+def get_stats():
+    stats = {}
+    for subject in data.subjects:
+        values = [
+            student[subject]
+            for student in data.Students
+            if student[subject] is not None
+        ]
+        avg = mean(values)
+        std = variance(values) ** 0.5
+        stats[subject] = (avg, std)
+    return stats
+
+def create_data(house, stats):
     X = []
     y = []
     for student in data.Students:
-        row =[]
+        row = []
         skip = False
         for subject in data.subjects:
             value = student[subject]
             if value is None:
                 skip = True
                 break
+            mean, std = stats[subject]
+            if std == 0:
+                value = 0
+            else:
+                value = (value - mean) / std
             row.append(value)
         if skip:
             continue
@@ -24,13 +42,16 @@ def create_data(house):
     return X, y
 
 def get_weights():
+    weights = {}
+    stats = get_stats()
     for house in data.Houses:
-        X, y = create_data(house)
-        tab = [0.0] * (len(data.subjects) + 1)
-        thetas = gradient_descent(X, y, tab)
+        X, y = create_data(house, stats)
+        theta = [0.0] * (len(data.subjects) + 1)
+        theta = gradient_descent(X, y, theta)
         print("Fin maison :", house)
-        with open(f"{house}.json", "w", encoding="utf-8") as file:
-            json.dump(thetas, file, indent=4, ensure_ascii=False)
+        weights[house] = theta
+    with open("weights.json", "w", encoding="utf-8") as file:
+        json.dump(weights, file, indent=4, ensure_ascii=False)
 
 def gradient_descent(X, y, theta):
     learning_rate = 0.001
@@ -54,4 +75,5 @@ def gradient_descent(X, y, theta):
             theta[j] -= learning_rate * gradients[j] / m
     return theta
 
-get_weights()
+if __name__ == "__main__":
+    get_weights()

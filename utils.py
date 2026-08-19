@@ -37,17 +37,15 @@ def get_subject(subject):
 	return values
 
 def lowest_variance():
-    best_subject = None
-    best_variance = float("inf")
+    variances = {}
     for subject in data.subjects:
-        values = get_subject(subject)
-        if len(values) == 0:
-            continue
-        var = variance(values)
-        if var < best_variance:
-            best_variance = var
-            best_subject = subject
-    return best_subject, best_variance
+        values = [
+            student[subject]
+            for student in data.Students
+            if student[subject] is not None
+        ]
+        variances[subject] = variance(values)
+    return sorted(variances.items(), key=lambda x: x[1])[:2]
 
 def percentile(values, p):
     n = len(values)
